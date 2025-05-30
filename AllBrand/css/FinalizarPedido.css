@@ -1,0 +1,223 @@
+/* === ESTILOS BASE (hereda de catálogo) === */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f4f4;
+  color: #1e1e1e;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: #1e1e1e;
+  color: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+header nav a {
+  color: #fff;
+  margin: 0 1rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+header nav a:hover {
+  text-decoration: underline;
+  color: #ddd;
+}
+
+footer {
+  background: #1e1e1e;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+}
+
+footer a {
+  color: #fff;
+  margin: 0 1rem;
+  text-decoration: none;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  margin: 0.5rem;
+  background: #1e1e1e;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #333;
+}
+
+/* === CONTENEDOR GENERAL === */
+
+.checkout-container {
+  flex: 1;
+  max-width: 1100px;
+  margin: auto;
+  padding: 2rem 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 800px) {
+  .checkout-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.checkout-container h2 {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+/* === RESUMEN DE PEDIDO === */
+
+.order-summary {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.order-summary h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.order-item {
+  display: flex;
+  gap: 1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.8rem;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.order-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.order-item .details {
+  flex: 1;
+}
+
+.order-item .details h4 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+.order-item .details p {
+  margin: 0.2rem 0;
+  font-size: 0.9rem;
+}
+
+.order-item .price {
+  font-weight: bold;
+}
+
+.order-item .subtotal {
+  color: #1e1e1e;
+  font-weight: bold;
+}
+
+.order-total {
+  text-align: right;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+/* === FORMULARIO === */
+
+.order-form {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+}
+
+.order-form h3 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.order-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.order-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.order-form input[type="text"],
+.order-form input[type="tel"],
+.order-form input[type="date"] {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 0.3rem;
+}
+
+.payment-method {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.8rem;
+}
+
+.payment-method legend {
+  font-weight: 600;
+  padding: 0 0.3rem;
+}
+
+.payment-method label {
+  margin-right: 1rem;
+  font-weight: normal;
+}
+
+.place-order-btn {
+  align-self: center;
+  margin-top: 1rem;
+  background: #28a745;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.place-order-btn:hover {
+  background: #218838;
+}

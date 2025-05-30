@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registro - AllBasketball</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .auth-container {
+      background-color: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 0.75rem;
+      background-color: #1e1e1e;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #333;
+    }
+
+    .switch-link {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    .switch-link a {
+      color: #1e1e1e;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .switch-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h1>AllBasketball</h1>
+
+    <form id="register-form">
+      <h2>Registro</h2>
+      <input type="text" name="nombres" placeholder="Nombres" required />
+      <input type="text" name="apellidos" placeholder="Apellidos" required />
+      <input type="email" name="email" placeholder="Correo electrónico" required />
+      <input type="password" name="password" placeholder="Contraseña" required />
+      <input type="text" name="direccion" placeholder="Dirección" required />
+      <input type="tel" name="celular" placeholder="Número celular" required />
+      <button type="submit">Registrarse</button>
+    </form>
+
+    <div class="switch-link">
+      ¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBhmCMr7xO5dyTgBCEXMjK7depjrpzXCp8",
+      authDomain: "allbasketball-8fa58.firebaseapp.com",
+      projectId: "allbasketball-8fa58",
+      storageBucket: "allbasketball-8fa58.appspot.com",
+      messagingSenderId: "534903387510",
+      appId: "1:534903387510:web:172f292ba4a9b70c483657"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const registerForm = document.getElementById('register-form');
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = registerForm.email.value;
+      const password = registerForm.password.value;
+      const nombres = registerForm.nombres.value;
+      const apellidos = registerForm.apellidos.value;
+      const direccion = registerForm.direccion.value;
+      const celular = registerForm.celular.value;
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "usuarios", user.uid), {
+          nombres: nombres,
+          apellidos: apellidos,
+          direccion: direccion,
+          celular: celular,
+          email: email
+        });
+
+        await sendEmailVerification(user);
+        alert("Registro exitoso. Por favor verifica tu correo antes de iniciar sesión.");
+        registerForm.reset();
+        window.location.href = "login.html";
+      } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+          alert("Correo enlazado a una cuenta");
+        } else {
+          alert("Error: " + error.message);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

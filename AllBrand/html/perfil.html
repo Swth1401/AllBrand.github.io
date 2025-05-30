@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Perfil - AllBasketball</title>
+  <link rel="stylesheet" href="../css/perfil.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>AllBrand</h1>
+      <nav>
+        <a href="home.html">Inicio</a>
+        <a href="catalogo.html">Catálogo</a>
+        <a href="perfil.html">Perfil</a>
+        <a href="#" id="logout-link">Salir</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1>Perfil de usuario</h1>
+
+    <form id="profile-form">
+      <div>
+        <label for="nombres">Nombres</label>
+        <input type="text" id="nombres" name="nombres" required />
+      </div>
+      <div>
+        <label for="apellidos">Apellidos</label>
+        <input type="text" id="apellidos" name="apellidos" required />
+      </div>
+      <div>
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" name="email" readonly />
+      </div>
+      <div>
+        <label for="direccion">Dirección</label>
+        <input type="text" id="direccion" name="direccion" />
+      </div>
+      <div>
+        <label for="celular">Número celular</label>
+        <input type="tel" id="celular" name="celular" />
+      </div>
+      <button type="submit">Guardar cambios</button>
+    </form>
+
+    <button class="logout-btn" id="logout-btn">Cerrar sesión</button>
+    <p class="mensaje" id="mensaje"></p>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 AllBrand</p>
+  </footer>
+
+  <script type="module">
+    import { 
+      initializeApp 
+    } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+    import { 
+      getAuth, onAuthStateChanged, signOut 
+    } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+    import { 
+      getFirestore, doc, getDoc, updateDoc 
+    } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBhmCMr7xO5dyTgBCEXMjK7depjrpzXCp8",
+      authDomain: "allbasketball-8fa58.firebaseapp.com",
+      projectId: "allbasketball-8fa58",
+      storageBucket: "allbasketball-8fa58.appspot.com",
+      messagingSenderId: "534903387510",
+      appId: "1:534903387510:web:172f292ba4a9b70c483657"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const profileForm = document.getElementById('profile-form');
+    const logoutBtn = document.getElementById('logout-btn');
+    const logoutLink = document.getElementById('logout-link');
+    const mensajeEl = document.getElementById('mensaje');
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const docRef = doc(db, "usuarios", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          profileForm.nombres.value = data.nombres || '';
+          profileForm.apellidos.value = data.apellidos || '';
+          profileForm.email.value = user.email;
+          profileForm.direccion.value = data.direccion || '';
+          profileForm.celular.value = data.celular || '';
+        } else {
+          profileForm.email.value = user.email;
+        }
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Usuario no autenticado");
+        return;
+      }
+
+      const userRef = doc(db, "usuarios", user.uid);
+      try {
+        await updateDoc(userRef, {
+          nombres: profileForm.nombres.value.trim(),
+          apellidos: profileForm.apellidos.value.trim(),
+          direccion: profileForm.direccion.value.trim(),
+          celular: profileForm.celular.value.trim()
+        });
+        mensajeEl.textContent = "Cambios guardados exitosamente.";
+        setTimeout(() => mensajeEl.textContent = "", 3000);
+      } catch (error) {
+        alert("Error al guardar los cambios: " + error.message);
+      }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    });
+
+    logoutLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => {
+        window.location.href = "login.html";
+      });
+    });
+  </script>
+</body>
+</html>

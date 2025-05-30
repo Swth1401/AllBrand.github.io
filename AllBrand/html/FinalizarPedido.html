@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Finalizar Pedido – All Brand</title>
+  <link rel="stylesheet" href="../css/FinalizarPedido.css" />
+</head>
+<body>
+  <!-- HEADER (mismo estilo que catálogo) -->
+  <header>
+    <h1>All Brand</h1>
+    <nav>
+      <a href="home.html">Inicio</a>
+      <a href="catalogo.html">Catálogo</a>
+      <a href="perfil.html">Perfil</a>
+      <a href="#" id="logout-link">Salir</a>
+    </nav>
+  </header>
+
+  <main class="checkout-container">
+    <h2>Revisa y finaliza tu pedido</h2>
+
+    <!-- Resumen de productos -->
+    <section class="order-summary">
+      <h3>Productos en tu carrito</h3>
+      <div id="order-items" class="order-items"></div>
+      <div id="order-total" class="order-total">Total: S/ 0</div>
+    </section>
+
+    <!-- Formulario de datos -->
+    <section class="order-form">
+      <h3>Datos de entrega y pago</h3>
+      <form id="checkout-form" novalidate>
+        <label>Nombre completo
+          <input type="text" id="fullname" required />
+        </label>
+
+        <label>Dirección de entrega
+          <input type="text" id="address" required />
+        </label>
+
+        <label>Teléfono de contacto
+          <input type="tel" id="phone" required />
+        </label>
+
+        <label>Persona que recibirá
+          <input type="text" id="receiver" required />
+        </label>
+
+        <label>Fecha de entrega
+          <input type="date" id="delivery-date" required />
+        </label>
+
+        <fieldset class="payment-method">
+          <legend>Método de pago</legend>
+          <label><input type="radio" name="payment" value="Efectivo" required /> Efectivo al recibir</label>
+          <label><input type="radio" name="payment" value="Tarjeta" /> Tarjeta (POS)</label>
+        </fieldset>
+
+        <button type="submit" class="place-order-btn">Confirmar pedido</button>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div style="margin-bottom: 0.5rem;">
+      <a href="#">Facebook</a>
+      <a href="#">Instagram</a>
+      <a href="#">Acerca de nosotros</a>
+      <a href="#">Términos y condiciones</a>
+    </div>
+    <p>&copy; 2025 All Brand</p>
+  </footer>
+
+  <!-- Script de lógica -->
+  <script type="module">
+    import { auth } from '../js/firebase.js';
+    import { signOut } from 'https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js';
+
+    /* Logout simple */
+    document.getElementById('logout-link').addEventListener('click', e => {
+      e.preventDefault();
+      signOut(auth).then(() => (window.location.href = 'login.html'));
+    });
+
+    /* ----- Renderizar carrito ----- */
+    const CART_KEY = 'allbasketball_cart';
+    const itemsBox = document.getElementById('order-items');
+    const totalEl  = document.getElementById('order-total');
+    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+
+    renderCart();
+
+    function renderCart() {
+      itemsBox.innerHTML = '';
+      if (!cart.length) {
+        itemsBox.innerHTML = '<p>Tu carrito está vacío.</p>';
+        totalEl.textContent = 'Total: S/ 0';
+        return;
+      }
+
+      let total = 0;
+      cart.forEach(prod => {
+        total += prod.price * prod.qty;
+        const row = document.createElement('div');
+        row.className = 'order-item';
+        row.innerHTML = `
+          <img src="${prod.img}" alt="${prod.name}" />
+          <div class="details">
+            <h4>${prod.name}</h4>
+            <p>Color: ${prod.color} &nbsp;|&nbsp; Talla: ${prod.size}</p>
+            <p>Cantidad: ${prod.qty}</p>
+            <p class="price">Precio: S/ ${prod.price.toFixed(2)}</p>
+            <p class="subtotal">Subtotal: S/ ${(prod.price * prod.qty).toFixed(2)}</p>
+          </div>`;
+        itemsBox.appendChild(row);
+      });
+
+      totalEl.textContent = `Total: S/ ${total.toFixed(2)}`;
+    }
+
+    /* ----- Enviar pedido ----- */
+    document.getElementById('checkout-form').addEventListener('submit', e => {
+      e.preventDefault();
+      if (!cart.length) {
+        alert('Tu carrito está vacío.');
+        return;
+      }
+
+      const data = {
+        fullname: document.getElementById('fullname').value,
+        address : document.getElementById('address').value,
+        phone   : document.getElementById('phone').value,
+        receiver: document.getElementById('receiver').value,
+        date    : document.getElementById('delivery-date').value,
+        payment : document.querySelector('input[name="payment"]:checked')?.value,
+        items   : cart
+      };
+
+      // Aquí se enviaría el pedido a un backend o se procesaría
+      console.log('Pedido listo para enviar:', data);
+      
+      alert('¡Gracias por tu compra, ' + data.fullname + '!');
+      // Limpiar carrito y volver a inicio o perfil
+      localStorage.removeItem(CART_KEY);
+      window.location.href = 'home.html';
+    });
+  </script>
+</body>
+</html>

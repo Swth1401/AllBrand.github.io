@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Catálogo – All Brand</title>
+  <link rel="stylesheet" href="../css/catalogo.css" />
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <h1>All Brand</h1>
+    <nav>
+      <a href="home.html">Inicio</a>
+      <a href="catalogo.html">Catálogo</a>
+      <a href="perfil.html">Perfil</a>
+      <a href="#" id="logout-link">Salir</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Últimos lanzamientos</h2>
+    <div class="product-grid">
+      <a class="product-card" href="polo-detalle.html?id=polo-lakers-2025">
+        <img src="../Images/PoloBasico.jpg" alt="Polo Lakers Edición 2025" />
+        <div class="product-info">
+          <h4>Polo Lakers Edición 2025</h4>
+          <span class="price">S/ 75</span>
+        </div>
+      </a>
+      <a class="product-card" href="polo-detalle.html?id=polo-bulls-retro">
+        <img src="../Images/PoloBasico.jpg" alt="Polo Bulls Retro 90s" />
+        <div class="product-info">
+          <h4>Polo Bulls Retro 90s</h4>
+          <span class="price">S/ 70</span>
+        </div>
+      </a>
+      <!-- Agrega más productos aquí siguiendo el mismo patrón -->
+    </div>
+
+    <h2 style="margin-top:2.5rem;">Colección completa</h2>
+    <div class="product-grid">
+      <a class="product-card" href="polo-detalle.html?id=polo-heat-vice">
+        <img src="../Images/PoloBasico.jpg" alt="Polo Heat Vice" />
+        <div class="product-info">
+          <h4>Polo Heat Vice</h4>
+          <span class="price">S/ 68</span>
+        </div>
+      </a>
+      <!-- Más productos -->
+    </div>
+  </main>
+
+  <footer>
+    <div style="margin-bottom: 0.5rem;">
+      <a href="#">Facebook</a>
+      <a href="#">Instagram</a>
+      <a href="#">Acerca de nosotros</a>
+      <a href="#">Términos y condiciones</a>
+    </div>
+    <p>&copy; 2025 All Brand</p>
+  </footer>
+
+  <!-- Carrito -->
+  <button id="cart-button">🛒 Carrito (<span id="cart-count">0</span>)</button>
+  <aside id="cart-panel" aria-label="Carrito de compras">
+    <h3>Tu carrito</h3>
+    <div id="cart-items"><p>Tu carrito está vacío.</p></div>
+    <div id="cart-total">Total: S/ 0</div>
+    <button id="close-cart">Cerrar carrito</button>
+  </aside>
+
+  <!-- Firebase y lógica -->
+  <script type="module" src="../js/firebase.js"></script>
+  <script type="module" src="../js/cart.js"></script>
+  <script type="module">
+    import { auth } from "../js/firebase.js";
+    import { signOut } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+
+    document.getElementById("logout-link").addEventListener("click", (e) => {
+      e.preventDefault();
+      signOut(auth).then(() => window.location.href = "login.html");
+    });
+
+    import { setupCart } from '../js/cart.js';
+    setupCart();
+  </script>
+</body>
+</html>
